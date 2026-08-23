@@ -1,4 +1,4 @@
--- ═══════════════════════════════════════════════════════════════════════════════
+﻿-- ═══════════════════════════════════════════════════════════════════════════════
 -- TRIAGEGRID MIGRATION 0001 — Schema, constraints, indexes, core triggers
 -- ═══════════════════════════════════════════════════════════════════════════════
 --
@@ -64,6 +64,11 @@ create extension if not exists postgis with schema extensions;
 create extension if not exists pg_cron;          -- schedules match-batch + health checks (FR-7)
 create extension if not exists pg_net;           -- fire-and-forget HTTP to Edge Functions
 create extension if not exists pgcrypto;         -- gen_random_bytes, digest (hash-chained audit)
+
+-- Hosted Supabase installs PostGIS types into the `extensions` schema; the
+-- migration session's default search_path (public only) cannot resolve
+-- `geography`/`ST_*` without this.
+set search_path = public, extensions;
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- ENUMS

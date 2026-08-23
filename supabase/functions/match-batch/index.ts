@@ -1,4 +1,4 @@
-// ═════════════════════════════════════════════════════════════════════════════
+﻿// ═════════════════════════════════════════════════════════════════════════════
 // TRIAGEGRID EDGE FUNCTION: match-batch
 //
 // FR-3 — Batched weighted bipartite assignment.
@@ -31,7 +31,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // Solver lives in _shared so it can be unit-tested with Vitest directly.
-import { hungarian, LARGE } from "../_shared/hungarian";
+import { hungarian, LARGE } from "../_shared/hungarian.ts";
 
 interface Incident {
   id: string;
@@ -68,10 +68,14 @@ function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): nu
 
 async function handler(req: Request): Promise<Response> {
   const secret = Deno.env.get("MATCH_BATCH_SECRET") ?? "";
-  const auth = req.headers.get("Authorization") ?? "";
   // Shared-secret gate: only the DB (which holds the same secret in config)
-  // may invoke this function.
-  if (!secret || auth !== `Bearer ${secret}`) {
+  // may invoke this function. The secret rides in x-match-secret because the
+  // platform gateway requires the Authorization header to carry a platform
+  // JWT (anon key) for transit.
+  const auth =
+    req.headers.get("x-match-secret") ??
+    req.headers.get("Authorization") ?? "";
+  if (!secret || auth !== secret) {
     return new Response(JSON.stringify({ error: "unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },

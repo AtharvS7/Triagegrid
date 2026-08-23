@@ -7,7 +7,7 @@ $ref = "wyqiiqquyrvccsczlldb"
 $base = "https://$ref.supabase.co"
 $svc = $env:SUPABASE_SERVICE_ROLE_KEY
 if (-not $svc) { throw "Set SUPABASE_SERVICE_ROLE_KEY first" }
-$H = @{ Authorization = "Bearer $svc"; apikey = $svc; "Content-Type" = "application/json" }
+$H = @{ Authorization = "Bearer $svc"; apikey = $svc; "Content-Type" = "application/json"; Prefer = "return=representation" }
 
 function RestJson($method, $url, $body) {
   $params = @{ Uri = $url; Method = $method; Headers = $H; ContentType = "application/json" }
@@ -36,11 +36,9 @@ $admin = RestJson "POST" "$base/auth/v1/admin/users" @{
   user_metadata = @{ full_name = "System Admin" } }
 Write-Host "admin user: $($admin.id)"
 
-# 4) Personnel rows
+# 4) Personnel row
 $null = RestJson "POST" "$base/rest/v1/personnel" @{
   id = $admin.id; agency_id = $agency.id; role = "admin"; full_name = "System Admin"; locale = "en" }
-$null = RestJson "POST" "$base/rest/v1/personnel" @{
-  id = $admin.id; agency_id = $agency.id; role = "admin"; full_name = "System Admin"; locale = "en" } # dedupe guard
 Write-Host "personnel: admin linked"
 
 # NOTE: hospital_admin + field users are provisioned by the admin from the

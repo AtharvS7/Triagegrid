@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:reset": "supabase db reset",
-    "db:test": "supabase test db",`n    "test:e2e": "node tests/e2e/smoke.mjs"
+    "db:test": "supabase test db",
+    "test:e2e": "node tests/e2e/smoke.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",

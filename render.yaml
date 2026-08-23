@@ -1,0 +1,30 @@
+# TriageGrid — Render deployment definition.
+# Free-tier compatible: one static-friendly Node web service; Supabase free
+# project supplies database/auth/realtime/storage/edge functions.
+services:
+  - type: web
+    name: triagegrid-web
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start -- -p $PORT
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      # Supabase project URL (dashboard → Project Settings → API)
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      # Publishable/anon key — safe for browser exposure
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      # Service role key — SERVER ONLY. Set via Render dashboard, never commit.
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: NODE_ENV
+        value: production
+    # Notes:
+    #  - Next.js 14 App Router with dynamic API routes needs the Node runtime
+    #    (not a pure static export): /api/sync mediates offline reconciliation.
+    #  - Free tier cold starts are acceptable for this workload; field devices
+    #    keep operating offline through the IndexedDB outbox regardless.

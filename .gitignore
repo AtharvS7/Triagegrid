@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+.next/
+out/
+
+# Env — never commit secrets
+.env
+.env.local
+.env*.local
+
+# Supabase local dev artifacts (safe to keep migrations/seed)
+supabase/.branches/
+supabase/.temp/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

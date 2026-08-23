@@ -31,7 +31,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // Solver lives in _shared so it can be unit-tested with Vitest directly.
-import { hungarian, LARGE } from "../_shared/hungarian.ts";
+import { hungarian, FORBIDDEN as LARGE } from "../_shared/hungarian.ts";
 
 interface Incident {
   id: string;
